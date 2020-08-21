@@ -14,12 +14,7 @@
 		<jsp:include page="header.jsp" />
 		<hr />
 		<h2>Admin Login</h2>
-		
-		 
-		<%-- <form action='${param.loginid=="admin"?"admin":"user" }' method="post"> --%>
-		
-<%-- 		<form action="<%= request.getContextPath() %>/admin" method="post">
- --%>
+	
  <form action="admin?action=login" method="post">
 			<div>
 				<div>

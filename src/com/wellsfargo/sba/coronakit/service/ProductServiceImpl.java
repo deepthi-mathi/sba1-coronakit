@@ -23,14 +23,14 @@ public class ProductServiceImpl implements ProductService{
 	}
 
 	private boolean isProductName(String name) {
-		return name != null && (name.length() >= 3 || name.length() <= 20);
+		return name != null;
 	}
 
 	private boolean isCostValid(Double cost) {
 		return cost >= 0;
 	}
 	private boolean isProductDesc(String proddesc) {
-		return proddesc != null && (proddesc.length() >= 3 || proddesc.length() <= 20);
+		return proddesc != null;
 	}
 
 	private boolean isValidProduct(ProductMaster product) throws CkException {
@@ -45,7 +45,7 @@ public class ProductServiceImpl implements ProductService{
 
 		if (!isProductName(product.getProductName())) {
 			isValid = false;
-			errMsg.add("Product Name can not be blank,and must be of 3 to 20 chars in length");
+			errMsg.add("Product Name can not be blank");
 		}
 
 		if (!isCostValid(product.getCost())) {

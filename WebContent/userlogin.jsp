@@ -1,17 +1,31 @@
-<header>
 
-	<h1>Welcome!  Manage your products</h1>
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
+
+
+<title>${username}-Manage</title>
+</head>
+<body>
+
+	<jsp:include page="header.jsp" />
 	<hr />
+
+	<%
+		if (session.getAttribute("username") == null)
+			response.sendRedirect("index.jsp");
+	%>
+
+	Welcome ${username} ! Manage your products
 	<nav>
 		<a href="index.jsp">Home</a> 
 		<span>|</span> 
-		<a href="list" >List All products</a>
+		<a href="user?action=showproducts">Show All products</a> 
+		<span>|</span>
+		<a href="user?action=newproduct">Add New product</a> 
 		<span>|</span> 
-		<a href="newproduct">Add New product</a>
-		<span>|</span> 
-		<a href="editproduct">Edit product</a>  
+		<a href="admin?action=logout">Logout</a>
 	</nav>
 
 	<hr />
-
-</header>
+	<jsp:include page="footer.jsp" />
+</body>
+</html>
