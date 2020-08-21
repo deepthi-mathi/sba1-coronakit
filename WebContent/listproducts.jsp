@@ -32,7 +32,7 @@
 						<td>${product.productName }</td>
 						<td>${product.cost }</td>
 						<td>${product.productDescription }</td>
-						<td><a href="admin?action=deleteproduct&id="${product.id }">DELETE</a> <span>|</span>
+						<td><a href="admin?action=deleteproduct&id=${product.id }">DELETE</a> <span>|</span>
 							<a href="admin?action=editproduct&id=${product.id }">EDIT</a> <span>|</span></td>
 					</tr>
 				</c:forEach>

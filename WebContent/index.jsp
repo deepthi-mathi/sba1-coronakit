@@ -42,10 +42,11 @@
 		
 	</div>
 	<hr />
-	<!-- <div>
-		<a href="user?action=newuser"><button>Create Corona Kit</button></a>
+	<div>
+		<a href="user?action=newuser"><button>New User Register</button></a>
+		<a href="userlogin.jsp"><button>Existing user</button></a>
 	</div>
-	<hr /> -->
+	<hr />
 
 
 	<jsp:include page="footer.jsp" />

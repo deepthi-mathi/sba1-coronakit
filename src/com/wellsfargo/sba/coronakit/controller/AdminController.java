@@ -1,10 +1,10 @@
 package com.wellsfargo.sba.coronakit.controller;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -12,7 +12,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.wellsfargo.sba.coronakit.dao.KitDao;
 import com.wellsfargo.sba.coronakit.dao.ProductMasterDao;
+import com.wellsfargo.sba.coronakit.dao.UserDao;
 import com.wellsfargo.sba.coronakit.exception.CkException;
 import com.wellsfargo.sba.coronakit.modal.ProductMaster;
 import com.wellsfargo.sba.coronakit.service.ProductService;
@@ -25,12 +27,29 @@ public class AdminController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private ProductMasterDao productMasterDao;
 	private ProductService productService;
-
-	@Override
-	public void init() throws ServletException {
-		productService = new ProductServiceImpl();
+	
+	public void setProductService(ProductService productService) {
+		this.productService = productService;
 	}
 
+
+
+	public void setProductMasterDao(ProductMasterDao productMasterDao) {
+		this.productMasterDao = productMasterDao;
+	}
+
+	public void init(ServletConfig config) {
+		// String jdbcURL = config.getServletContext().getInitParameter("jdbcUrl");
+		// String jdbcUsername =
+		// config.getServletContext().getInitParameter("jdbcUsername");
+		// String jdbcPassword = config.
+		// getServletContext().getInitParameter("jdbcPassword");
+
+		this.productMasterDao = new ProductMasterDao();
+		this.productService = new ProductServiceImpl();
+
+	}
+	
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doGet(request, response);
 	}
@@ -80,19 +99,21 @@ public class AdminController extends HttpServlet {
 			throws ServletException, IOException {
 
 		String view = "";
-		HttpSession session=request.getSession();
+		HttpSession session = request.getSession();
 
 		String uname = request.getParameter("loginid");
 		String pass = request.getParameter("password");
+		System.out.println(uname + "and " + pass);
 
-		if (uname!=null && uname.equalsIgnoreCase("admin") && (pass.equalsIgnoreCase("admin"))) {
-			
+		if (uname.isEmpty() || pass.isEmpty()) {
+			view = "index.jsp";
+		}
+		else if (uname.equalsIgnoreCase("admin") && (pass.equalsIgnoreCase("admin"))) {
+
 			session.setAttribute("username", uname);
 			view = "adminlogin.jsp";
-		} else {
-			session.setAttribute("username", uname);
-			view = "userlogin.jsp";
-		}
+		} 
+		
 		return view;
 
 	}
@@ -124,23 +145,6 @@ public class AdminController extends HttpServlet {
 
 	}
 
-	private String updateProduct(HttpServletRequest request, HttpServletResponse response) {
-
-		int id = Integer.parseInt(request.getParameter("id"));
-		String view = "";
-
-		try {
-			ProductMaster product = productService.getItemById(id);
-			request.setAttribute("product", product);
-			view = "newproduct.jsp";
-		} catch (CkException e) {
-			request.setAttribute("errMsg", e.getMessage());
-			view = "errorPage.jsp";
-		}
-		return view;
-
-	}
-
 	private String showEditProductForm(HttpServletRequest request, HttpServletResponse response) {
 
 		int id = Integer.parseInt(request.getParameter("id"));
@@ -163,16 +167,16 @@ public class AdminController extends HttpServlet {
 		ProductMaster products = new ProductMaster();
 
 		products.setId(Integer.parseInt(request.getParameter("id")));
-		products.setProductName(request.getParameter("prodname"));
+		products.setProductName(request.getParameter("title"));
 		products.setCost(Double.parseDouble(request.getParameter("cost")));
-		products.setProductDescription(request.getParameter("proddesc"));
+		products.setProductDescription(request.getParameter("desc"));
 
 		String view = "";
 
 		try {
-			productService.validateAndSave(products);
+			productService.validateAndAdd(products);
 			request.setAttribute("msg", "Item Got Saved!");
-			view = "index.jsp";
+			view = "adminlogin.jsp";
 		} catch (CkException e) {
 			request.setAttribute("errMsg", e.getMessage());
 			view = "errorPage.jsp";
@@ -183,13 +187,13 @@ public class AdminController extends HttpServlet {
 	private String deleteProduct(HttpServletRequest request, HttpServletResponse response) {
 
 		int id = Integer.parseInt(request.getParameter("id"));
-		System.out.println("integer param="+id);
+		System.out.println("integer param=" + id);
 		String view = "";
 
 		try {
 			productService.deleteItem(id);
 			request.setAttribute("msg", "Item Got Deleted!");
-			view = "index.jsp";
+			view = "adminlogin.jsp";
 		} catch (CkException e) {
 			request.setAttribute("errMsg", e.getMessage());
 			view = "errorPage.jsp";
@@ -198,12 +202,14 @@ public class AdminController extends HttpServlet {
 
 	}
 
-	private String showNewProductForm(HttpServletRequest request, HttpServletResponse response) {
+	private String showNewProductForm(HttpServletRequest request, HttpServletResponse response) throws CkException {
+
+		String view = "";
 
 		ProductMaster product = new ProductMaster();
 		request.setAttribute("product", product);
-
-		return "newProduct.jsp";
+		view = "newproduct.jsp";
+		return view;
 
 	}
 

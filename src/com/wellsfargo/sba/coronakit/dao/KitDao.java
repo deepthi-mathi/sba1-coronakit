@@ -24,7 +24,7 @@ public class KitDao {
 	private Connection jdbcConnection;
 
 	public static final String INS_ITEM_QRY = "INSERT INTO kitdetail(kiddetailid,coronaKitid,productid,quantity,amount) values(?,?,?,?,?)";
-	public static final String UPD_ITEM_QRY = "UPDATE kitdetail SET kiddetailid=?,coronaKitid=?,productid=?,quantity=?,amount=? WHERE kiddetailid=?";
+	public static final String UPD_ITEM_QRY = "UPDATE kitdetail SET coronaKitid=?,productid=?,quantity=?,amount=? WHERE kiddetailid=?";
 	public static final String DEL_ITEM_QRY = "DELETE FROM kitdetail WHERE kiddetailid=?";
 	public static final String SEL_ITEM_QRY_BY_ID = "SELECT kiddetailid,coronaKitid,productid,quantity,amount FROM kitdetail WHERE kiddetailid=?";
 	public static final String SEL_ALL_ITEMS_QRY = "SELECT kiddetailid,coronaKitid,productid,quantity,amount FROM kitdetail";
@@ -55,7 +55,7 @@ public class KitDao {
 	public KitDetail add(KitDetail kitdetail) throws CkException {
 		if (kitdetail != null) {
 			try (Connection con = ConnectionFactory.getConnection();
-					PreparedStatement pst = con.prepareStatement(UPD_ITEM_QRY)) {
+					PreparedStatement pst = con.prepareStatement(INS_ITEM_QRY)) {
 
 				pst.setInt(1, kitdetail.getId());
 				pst.setInt(2, kitdetail.getCoronaKitId());
@@ -126,7 +126,7 @@ public class KitDao {
 			if (rs.next()) {
 				kitdetail = new KitDetail();
 				kitdetail.setId(rs.getInt(1));
-				kitdetail.setProductId(rs.getInt(2));
+				kitdetail.setCoronaKitId(rs.getInt(2));
 				kitdetail.setProductId(rs.getInt(3));
 				kitdetail.setQuantity(rs.getInt(4));
 				kitdetail.setAmount(rs.getDouble(5));
@@ -153,7 +153,7 @@ public class KitDao {
 				KitDetail kitdetail = new KitDetail();
 
 				kitdetail.setId(rs.getInt(1));
-				kitdetail.setProductId(rs.getInt(2));
+				kitdetail.setCoronaKitId(rs.getInt(2));
 				kitdetail.setProductId(rs.getInt(3));
 				kitdetail.setQuantity(rs.getInt(4));
 				kitdetail.setAmount(rs.getDouble(5));

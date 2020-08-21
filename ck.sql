@@ -7,6 +7,16 @@ CREATE DATABASE coronakitdb;
 
 USE coronakitdb;
 
+CREATE TABLE user(
+	name varchar(100) not null,
+	email varchar(100) not null,
+	username varchar(100) not null,
+	password varchar(100) not null,
+	contactnumber varchar(20),
+	address varchar(200) not null
+);
+
+
 CREATE TABLE ckkit(
 	id int primary key,
 	personname varchar(20) not null,

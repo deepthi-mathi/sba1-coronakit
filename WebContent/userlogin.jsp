@@ -9,18 +9,15 @@
 	<jsp:include page="header.jsp" />
 	<hr />
 
-	<%
-		if (session.getAttribute("username") == null)
-			response.sendRedirect("index.jsp");
-	%>
-
-	Welcome ${username} ! Manage your products
+	Welcome  ! Manage your products
 	<nav>
 		<a href="index.jsp">Home</a> 
 		<span>|</span> 
 		<a href="user?action=showproducts">Show All products</a> 
 		<span>|</span>
-		<a href="user?action=newproduct">Add New product</a> 
+		<a href="user?action=showkit">Show kit</a> 
+		<span>|</span>
+		<a href="user?action=ordersummary">ordersummary</a> 
 		<span>|</span> 
 		<a href="admin?action=logout">Logout</a>
 	</nav>

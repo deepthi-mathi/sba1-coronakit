@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+    <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
+    
 <!DOCTYPE html>
 <html>
 <head>
@@ -15,8 +17,7 @@
 	<form action='${product.id==null}&admin?action=newproduct:action=saveproduct' method="POST">
 		<div>
 			<label>Product ID: </label>
-			<input type="number" value="${product.id }" name="id" required 
-			 ${product.id==null?"":"readonly" } />
+			<input type="number" value="${product.id }" name="id" required />
 		</div>
 		<div>
 			<label>Product Name: </label>

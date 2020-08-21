@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+        <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
+    
 <!DOCTYPE html>
 <html>
 <head>
@@ -30,7 +32,9 @@
 						<td>${product.productName }</td>
 						<td>${product.cost }</td>
 						<td>${product.productDescription }</td>
-						<td><a>ADD</a></td>
+						<td><a href="user?action=addnewitem">ADD TO KIT</a><span>|</span>
+						<a href="user?action=deleteitem">DELETE FORM KIT</a><span>|</span>
+						</td>
 					</tr>
 				</c:forEach>
 			</table>

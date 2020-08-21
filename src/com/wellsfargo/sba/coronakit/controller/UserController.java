@@ -2,6 +2,7 @@ package com.wellsfargo.sba.coronakit.controller;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -15,22 +16,29 @@ import javax.servlet.http.HttpSession;
 
 import com.wellsfargo.sba.coronakit.dao.KitDao;
 import com.wellsfargo.sba.coronakit.dao.ProductMasterDao;
+import com.wellsfargo.sba.coronakit.dao.UserDao;
 import com.wellsfargo.sba.coronakit.exception.CkException;
+import com.wellsfargo.sba.coronakit.modal.KitDetail;
 import com.wellsfargo.sba.coronakit.modal.ProductMaster;
+import com.wellsfargo.sba.coronakit.modal.User;
 import com.wellsfargo.sba.coronakit.service.ProductService;
-
-
+import com.wellsfargo.sba.coronakit.service.ProductServiceImpl;
 
 @WebServlet("/user")
 public class UserController extends HttpServlet {
+
 	private static final long serialVersionUID = 1L;
-	private KitDao kitDAO;
+	private KitDao kitDao;
 	private ProductMasterDao productMasterDao;
 	private ProductService productService;
+	private UserDao userDao;
 
+	public void seUserDao(UserDao userDao) {
+		this.userDao = userDao;
+	}
 
-	public void setKitDAO(KitDao kitDAO) {
-		this.kitDAO = kitDAO;
+	public void setKitDAO(KitDao kitDao) {
+		this.kitDao = kitDao;
 	}
 
 	public void setProductMasterDao(ProductMasterDao productMasterDao) {
@@ -38,29 +46,32 @@ public class UserController extends HttpServlet {
 	}
 
 	public void init(ServletConfig config) {
-//		String jdbcURL = config.getServletContext().getInitParameter("jdbcUrl");
-//		String jdbcUsername = config.getServletContext().getInitParameter("jdbcUsername");
-//		String jdbcPassword = config. getServletContext().getInitParameter("jdbcPassword");
-		
-		this.kitDAO = new KitDao();
+		// String jdbcURL = config.getServletContext().getInitParameter("jdbcUrl");
+		// String jdbcUsername =
+		// config.getServletContext().getInitParameter("jdbcUsername");
+		// String jdbcPassword = config.
+		// getServletContext().getInitParameter("jdbcPassword");
+
+		this.kitDao = new KitDao();
 		this.productMasterDao = new ProductMasterDao();
+		this.userDao = new UserDao();
+		this.productService = new ProductServiceImpl();
+
 	}
 
-	public void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doGet(request, response);
 	}
 
-	public void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
 		String action = request.getParameter("action");
 		System.out.println("action=" + action);
-		
+
 		String viewName = "";
 		try {
 			switch (action) {
-		
+
 			case "newuser":
 				viewName = showNewUserForm(request, response);
 				break;
@@ -69,7 +80,7 @@ public class UserController extends HttpServlet {
 				break;
 			case "showproducts":
 				viewName = showAllProducts(request, response);
-				break;	
+				break;
 			case "addnewitem":
 				viewName = addNewItemToKit(request, response);
 				break;
@@ -84,32 +95,23 @@ public class UserController extends HttpServlet {
 				break;
 			case "saveorder":
 				viewName = saveOrderForDelivery(request, response);
-				break;	
+				break;
 			case "ordersummary":
 				viewName = showOrderSummary(request, response);
-				break;	
-			default : viewName = "notfound.jsp"; break;	
+				break;
+			default:
+				viewName = "notfound.jsp";
+				break;
 			}
 		} catch (Exception ex) {
-			
+
 			throw new ServletException(ex.getMessage());
 		}
-			RequestDispatcher dispatch = 
-					request.getRequestDispatcher(viewName);
-			dispatch.forward(request, response);
-	
-	}
-	
-	private String userLogout(HttpServletRequest request, HttpServletResponse response) {
-		String view = "";
+		RequestDispatcher dispatch = request.getRequestDispatcher(viewName);
+		dispatch.forward(request, response);
 
-		HttpSession session = request.getSession(false);
-		if (session != null)
-			session.invalidate();
-		view = "index.jsp";
-
-		return view;
 	}
+
 	private String showOrderSummary(HttpServletRequest request, HttpServletResponse response) {
 		// TODO Auto-generated method stub
 		return "";
@@ -136,13 +138,38 @@ public class UserController extends HttpServlet {
 	}
 
 	private String addNewItemToKit(HttpServletRequest request, HttpServletResponse response) {
-		// TODO Auto-generated method stub
-		return "";
+		
+		KitDetail kitdetail = new KitDetail();
+		
+
+		kitdetail.setId(Integer.parseInt(request.getParameter("id")));
+		kitdetail.setCoronaKitId(Integer.parseInt(request.getParameter("id")));
+		kitdetail.setProductId(Integer.parseInt(request.getParameter("id")));
+		kitdetail.setQuantity(Integer.parseInt(request.getParameter("id")));
+		kitdetail.setAmount(Double.parseDouble(request.getParameter("id")));
+		
+		/*user.setEmail(request.getParameter("email"));
+		user.setUname(request.getParameter("username"));
+		user.setPassword(request.getParameter("password"));
+		user.setContactNumber(request.getParameter("contact"));
+		user.setAddress(request.getParameter("address"));
+*/
+		String view = "";
+
+		try {
+			kitDao.add(kitdetail);
+			System.out.println("after add method");
+			request.setAttribute("msg", "Item Got Saved!");
+			view = "userlogin.jsp";
+		} catch (CkException e) {
+			request.setAttribute("errMsg", e.getMessage());
+			view = "errPage.jsp";
+		}
+		return view;
 	}
 
 	private String showAllProducts(HttpServletRequest request, HttpServletResponse response) {
 		String view = "";
-		System.out.println("showAllProducts");
 		try {
 			List<ProductMaster> products = productService.getAllItems();
 			request.setAttribute("productslist", products);
@@ -151,17 +178,38 @@ public class UserController extends HttpServlet {
 			request.setAttribute("errMsg", e.getMessage());
 			view = "errorPage.jsp";
 		}
-
+		System.out.println(view);
 		return view;
 	}
 
 	private String insertNewUser(HttpServletRequest request, HttpServletResponse response) {
-		// TODO Auto-generated method stub
-		return "";
+		User user = new User();
+
+		user.setName(request.getParameter("name"));
+		user.setEmail(request.getParameter("email"));
+		user.setUname(request.getParameter("username"));
+		user.setPassword(request.getParameter("password"));
+		user.setContactNumber(request.getParameter("contact"));
+		user.setAddress(request.getParameter("address"));
+
+		String view = "";
+
+		try {
+			userDao.add(user);
+			System.out.println("after add method");
+			request.setAttribute("msg", "Item Got Saved!");
+			view = "userlogin.jsp";
+		} catch (CkException e) {
+			request.setAttribute("errMsg", e.getMessage());
+			view = "errPage.jsp";
+		}
+		return view;
 	}
 
 	private String showNewUserForm(HttpServletRequest request, HttpServletResponse response) {
-		// TODO Auto-generated method stub
-		return "";
+		User user = new User();
+		request.setAttribute("user", user);
+
+		return "userregister.jsp";
 	}
 }

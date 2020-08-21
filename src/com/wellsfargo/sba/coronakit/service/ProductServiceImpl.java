@@ -30,6 +30,7 @@ public class ProductServiceImpl implements ProductService{
 		return cost >= 0;
 	}
 	private boolean isProductDesc(String proddesc) {
+
 		return proddesc != null;
 	}
 

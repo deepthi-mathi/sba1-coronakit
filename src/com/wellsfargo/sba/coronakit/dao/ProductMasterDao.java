@@ -53,7 +53,7 @@ public class ProductMasterDao {
 	public ProductMaster add(ProductMaster prodmaster) throws CkException {
 		if (prodmaster != null) {
 			try (Connection con = ConnectionFactory.getConnection();
-					PreparedStatement pst = con.prepareStatement(UPD_ITEM_QRY)) {
+					PreparedStatement pst = con.prepareStatement(INS_ITEM_QRY)) {
 
 				pst.setInt(1, prodmaster.getId());
 				pst.setString(2, prodmaster.getProductName());
@@ -76,11 +76,12 @@ public class ProductMasterDao {
 			try (Connection con = ConnectionFactory.getConnection();
 					PreparedStatement pst = con.prepareStatement(UPD_ITEM_QRY)) {
 
+				//pst.setInt(1, prodmaster.getId());
 				pst.setString(1, prodmaster.getProductName());
 				pst.setDouble(2, prodmaster.getCost());
-
 				pst.setString(3, prodmaster.getProductDescription());
-
+				pst.setInt(4, prodmaster.getId());
+				
 				pst.executeUpdate();
 
 			} catch (SQLException | NamingException exp) {
@@ -165,6 +166,8 @@ public class ProductMasterDao {
 
 			throw new CkException("Retrival the item failed!");
 		}
+		System.out.println("in showproducts getll() function");
+
 		return prodmasterdetails;
 	}
 }
