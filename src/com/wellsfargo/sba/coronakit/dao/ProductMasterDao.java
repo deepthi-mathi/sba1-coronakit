@@ -23,7 +23,7 @@ public class ProductMasterDao {
 	private String jdbcPassword;
 	private Connection jdbcConnection;
 
-	public static final String INS_ITEM_QRY = "INSERT INTO products(productid,prodname,cost,prodesc) values(?,?,?,?)";
+	public static final String INS_ITEM_QRY = "INSERT INTO products(prodname,cost,prodesc) values(?,?,?)";
 	public static final String UPD_ITEM_QRY = "UPDATE products SET prodname=?,cost=?,prodesc=? WHERE productid=?";
 	public static final String DEL_ITEM_QRY = "DELETE FROM products WHERE productid=?";
 	public static final String SEL_ITEM_QRY_BY_ID = "SELECT productid,prodname,cost,prodesc FROM products WHERE productid=?";
@@ -55,11 +55,11 @@ public class ProductMasterDao {
 			try (Connection con = ConnectionFactory.getConnection();
 					PreparedStatement pst = con.prepareStatement(INS_ITEM_QRY)) {
 
-				pst.setInt(1, prodmaster.getId());
-				pst.setString(2, prodmaster.getProductName());
-				pst.setDouble(3, prodmaster.getCost());
+				//pst.setInt(1, prodmaster.getId());
+				pst.setString(1, prodmaster.getProductName());
+				pst.setDouble(2, prodmaster.getCost());
 
-				pst.setString(4, prodmaster.getProductDescription());
+				pst.setString(3, prodmaster.getProductDescription());
 
 				pst.executeUpdate();
 
@@ -76,11 +76,11 @@ public class ProductMasterDao {
 			try (Connection con = ConnectionFactory.getConnection();
 					PreparedStatement pst = con.prepareStatement(UPD_ITEM_QRY)) {
 
-				//pst.setInt(1, prodmaster.getId());
-				pst.setString(1, prodmaster.getProductName());
-				pst.setDouble(2, prodmaster.getCost());
-				pst.setString(3, prodmaster.getProductDescription());
-				pst.setInt(4, prodmaster.getId());
+				pst.setInt(1, prodmaster.getId());
+				pst.setString(2, prodmaster.getProductName());
+				pst.setDouble(3, prodmaster.getCost());
+				pst.setString(4, prodmaster.getProductDescription());
+				pst.setInt(5, prodmaster.getId());
 				
 				pst.executeUpdate();
 

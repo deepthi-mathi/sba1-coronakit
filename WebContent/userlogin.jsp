@@ -8,8 +8,12 @@
 
 	<jsp:include page="header.jsp" />
 	<hr />
+	<%-- <%
+		if (session.getAttribute("username") == null)
+			response.sendRedirect("index.jsp");
+	%>
 
-	Welcome  ! Manage your products
+	Welcome  ${username}! Manage your products --%>
 	<nav>
 		<a href="index.jsp">Home</a> 
 		<span>|</span> 

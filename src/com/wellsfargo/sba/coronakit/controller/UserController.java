@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+
 import com.wellsfargo.sba.coronakit.dao.KitDao;
 import com.wellsfargo.sba.coronakit.dao.ProductMasterDao;
 import com.wellsfargo.sba.coronakit.dao.UserDao;
@@ -32,6 +33,9 @@ public class UserController extends HttpServlet {
 	private ProductMasterDao productMasterDao;
 	private ProductService productService;
 	private UserDao userDao;
+	//private KitDetail kitdetail;
+
+	
 
 	public void seUserDao(UserDao userDao) {
 		this.userDao = userDao;
@@ -74,6 +78,9 @@ public class UserController extends HttpServlet {
 
 			case "newuser":
 				viewName = showNewUserForm(request, response);
+				break;
+			case "existinguser":
+				viewName = existinguserLogin(request, response);
 				break;
 			case "insertuser":
 				viewName = insertNewUser(request, response);
@@ -128,39 +135,54 @@ public class UserController extends HttpServlet {
 	}
 
 	private String showKitDetails(HttpServletRequest request, HttpServletResponse response) {
-		// TODO Auto-generated method stub
-		return "";
+
+		String view = "";
+
+		try {
+			List<KitDetail> kitdetail = kitDao.getAll();
+			request.setAttribute("kitlist", kitdetail);
+			view = "showkitdetails.jsp";
+		} catch (CkException e) {
+			request.setAttribute("errMsg", e.getMessage());
+			view = "errPage.jsp";
+		}
+
+		return view;
 	}
 
 	private String deleteItemFromKit(HttpServletRequest request, HttpServletResponse response) {
-		// TODO Auto-generated method stub
-		return "";
+		int id = Integer.parseInt(request.getParameter("id"));
+		String view = "";
+
+		try {
+			kitDao.deleteById(id);
+			request.setAttribute("msg", "Item Got Deleted!");
+			view = "index.jsp";
+		} catch (CkException e) {
+			request.setAttribute("errMsg", e.getMessage());
+			view = "errPage.jsp";
+		}
+		return view;
 	}
 
 	private String addNewItemToKit(HttpServletRequest request, HttpServletResponse response) {
-		
-		KitDetail kitdetail = new KitDetail();
-		
 
-		kitdetail.setId(Integer.parseInt(request.getParameter("id")));
-		kitdetail.setCoronaKitId(Integer.parseInt(request.getParameter("id")));
-		kitdetail.setProductId(Integer.parseInt(request.getParameter("id")));
-		kitdetail.setQuantity(Integer.parseInt(request.getParameter("id")));
-		kitdetail.setAmount(Double.parseDouble(request.getParameter("id")));
-		
-		/*user.setEmail(request.getParameter("email"));
-		user.setUname(request.getParameter("username"));
-		user.setPassword(request.getParameter("password"));
-		user.setContactNumber(request.getParameter("contact"));
-		user.setAddress(request.getParameter("address"));
-*/
+		KitDetail kitdetail = new KitDetail();
+		HttpSession session = request.getSession();
+
+		//kitdetail.setId(1);
+		kitdetail.setCoronaKitId(1);
+		kitdetail.setProductId(Integer.parseInt(request.getParameter("value")));
+		kitdetail.setQuantity(Integer.parseInt(request.getParameter("quantity")));
+		double amount=Integer.parseInt(request.getParameter("quantity"))*Double.parseDouble(request.getParameter("cost"));
+		kitdetail.setAmount(amount);
+
 		String view = "";
 
 		try {
 			kitDao.add(kitdetail);
-			System.out.println("after add method");
-			request.setAttribute("msg", "Item Got Saved!");
-			view = "userlogin.jsp";
+			request.setAttribute("msg", "Item Got Added!");
+			view = "showproductstoadd.jsp";
 		} catch (CkException e) {
 			request.setAttribute("errMsg", e.getMessage());
 			view = "errPage.jsp";
@@ -195,14 +217,44 @@ public class UserController extends HttpServlet {
 		String view = "";
 
 		try {
-			userDao.add(user);
-			System.out.println("after add method");
-			request.setAttribute("msg", "Item Got Saved!");
-			view = "userlogin.jsp";
+			if (userDao.userAlreadyExists(request.getParameter("username"))) {
+				request.setAttribute("msg", "Username Already Exists!");
+				view = "userregister.jsp";
+			} else {
+				user = userDao.add(user);
+				request.setAttribute("user", user);
+				request.setAttribute("msg", "Item Got Saved!");
+				view = "userlogin.jsp";
+			}
 		} catch (CkException e) {
 			request.setAttribute("errMsg", e.getMessage());
 			view = "errPage.jsp";
 		}
+
+		return view;
+	}
+
+	private String existinguserLogin(HttpServletRequest request, HttpServletResponse response) throws CkException {
+
+		String view = "";
+		// HttpSession session = request.getSession();
+		//
+		// String uname = request.getParameter("loginid");
+		// String pass = request.getParameter("password");
+		// System.out.println(uname + "and " + pass);
+		// boolean userexists=userDao.userAlreadyExists(uname);
+
+		view = "userlogin.jsp";
+
+		/*
+		 * if (uname.isEmpty() || pass.isEmpty() || uname==null || pass==null) { view =
+		 * "index.jsp"; } else if (!uname.equalsIgnoreCase("admin") &&
+		 * !pass.equalsIgnoreCase("admin") && userexists) {
+		 * 
+		 * session.setAttribute("username", uname); view = "userlogin.jsp"; } else {
+		 * view = "userlogin.jsp"; }
+		 */
+
 		return view;
 	}
 

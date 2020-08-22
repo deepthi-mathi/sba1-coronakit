@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
-        <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
-    
+	pageEncoding="ISO-8859-1"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,38 +9,43 @@
 <title>Corona Kit-All Products(user)</title>
 </head>
 <body>
-<jsp:include page="header.jsp"/>
-<hr/>
+	<jsp:include page="header.jsp" />
+	<h5 align=center>Product List - Add to Kit</h5>
+	<hr />
 
-<c:choose>
+	<c:choose>
 		<c:when test="${productslist==null || productslist.isEmpty() }">
 			<p>No Products Found</p>
 		</c:when>
 		<c:otherwise>
-			<table border="1" cellspacing="5px" cellpadding="5px">
+			<table border="1">
 				<tr>
 					<th>Product id</th>
 					<th>Product Name</th>
 					<th>Product Cost</th>
 					<th>Product Desc</th>
-					
+					<th>Quantity</th>
+					<!-- 					<th>Total Amount</th>
+ -->
 				</tr>
-				<c:forEach items="${productslist }" var="product">
-				
+				<c:forEach items="${productslist}" var="product">
+
 					<tr>
-						<td>${product.id }</td>
-						<td>${product.productName }</td>
+						<td>${product.id}</td>
+						<td>${product.productName}</td>
 						<td>${product.cost }</td>
 						<td>${product.productDescription }</td>
-						<td><a href="user?action=addnewitem">ADD TO KIT</a><span>|</span>
-						<a href="user?action=deleteitem">DELETE FORM KIT</a><span>|</span>
-						</td>
+						<td><input type="text" name="quatity" /></td>
+						<td><a
+							href="user?action=addnewitem&id=${product.id}&cost=${product.cost}"
+							style="font-size: 10px; text-decoration: none">ADD TO KIT</a></td>
 					</tr>
 				</c:forEach>
 			</table>
 		</c:otherwise>
 	</c:choose>
-<hr/>	
-	<jsp:include page="footer.jsp"/>
+
+	<hr />
+	<jsp:include page="footer.jsp" />
 </body>
 </html>

@@ -18,10 +18,7 @@ public class ProductServiceImpl implements ProductService{
 		productDao = new ProductMasterDao();
 	}
 
-	private boolean isProductIdValid(Integer id) {
-		return id > 0;
-	}
-
+	
 	private boolean isProductName(String name) {
 		return name != null;
 	}
@@ -39,11 +36,7 @@ public class ProductServiceImpl implements ProductService{
 
 		boolean isValid = true;
 
-		if (!isProductIdValid(product.getId())) {
-			isValid = false;
-			errMsg.add("product id can not be null or negative or zero");
-		}
-
+		
 		if (!isProductName(product.getProductName())) {
 			isValid = false;
 			errMsg.add("Product Name can not be blank");

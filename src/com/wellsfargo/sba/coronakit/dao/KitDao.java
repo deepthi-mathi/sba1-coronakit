@@ -23,7 +23,7 @@ public class KitDao {
 	private String jdbcPassword;
 	private Connection jdbcConnection;
 
-	public static final String INS_ITEM_QRY = "INSERT INTO kitdetail(kiddetailid,coronaKitid,productid,quantity,amount) values(?,?,?,?,?)";
+	public static final String INS_ITEM_QRY = "INSERT INTO kitdetail(coronaKitid,productid,quantity,amount) values(?,?,?,?)";
 	public static final String UPD_ITEM_QRY = "UPDATE kitdetail SET coronaKitid=?,productid=?,quantity=?,amount=? WHERE kiddetailid=?";
 	public static final String DEL_ITEM_QRY = "DELETE FROM kitdetail WHERE kiddetailid=?";
 	public static final String SEL_ITEM_QRY_BY_ID = "SELECT kiddetailid,coronaKitid,productid,quantity,amount FROM kitdetail WHERE kiddetailid=?";
@@ -57,11 +57,11 @@ public class KitDao {
 			try (Connection con = ConnectionFactory.getConnection();
 					PreparedStatement pst = con.prepareStatement(INS_ITEM_QRY)) {
 
-				pst.setInt(1, kitdetail.getId());
-				pst.setInt(2, kitdetail.getCoronaKitId());
-				pst.setInt(3, kitdetail.getProductId());
-				pst.setInt(4, kitdetail.getQuantity());
-				pst.setDouble(5, kitdetail.getAmount());
+				//pst.setInt(1, kitdetail.getId());
+				pst.setInt(1, kitdetail.getCoronaKitId());
+				pst.setInt(2, kitdetail.getProductId());
+				pst.setInt(3, kitdetail.getQuantity());
+				pst.setDouble(4, kitdetail.getAmount());
 
 				pst.executeUpdate();
 

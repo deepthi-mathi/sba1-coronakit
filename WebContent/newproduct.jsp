@@ -17,7 +17,7 @@
 	<form action='${product.id==null}&admin?action=newproduct:action=saveproduct' method="POST">
 		<div>
 			<label>Product ID: </label>
-			<input type="number" value="${product.id }" name="id" required />
+			<input type="number" value="${product.id }" name="id" required ${product.id==null?"":"readonly"}/>
 		</div>
 		<div>
 			<label>Product Name: </label>

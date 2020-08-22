@@ -1,5 +1,5 @@
-<header>
+<header align=center>
 
-Order Management
+ <h1>Order Management</h1>
 
 </header>

@@ -22,7 +22,7 @@ public class UserDao {
 
 	public User add(User user) throws CkException {
 
-		if (user != null && !userAlreadyExists(user.getUname())) {
+		if (user != null){
 			try (Connection con = ConnectionFactory.getConnection();
 					PreparedStatement pst = con.prepareStatement(INS_ITEM_QRY)) {
 
@@ -37,7 +37,7 @@ public class UserDao {
 
 			} catch (SQLException | NamingException exp) {
 				exp.printStackTrace();
-				throw new CkException("Saving the item failed! or Username already exists");
+				throw new CkException("Saving the item failed! ");
 			}
 		}
 
@@ -56,7 +56,7 @@ public class UserDao {
 			if(rs.next()){
 				usercount = rs.getInt(1);
 				}
-			
+			System.out.println(usercount);
 
 		} catch (SQLException | NamingException exp) {
 			exp.printStackTrace();
