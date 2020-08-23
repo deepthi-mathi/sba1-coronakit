@@ -3,6 +3,7 @@ package com.wellsfargo.sba.coronakit.controller;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -14,12 +15,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-
 import com.wellsfargo.sba.coronakit.dao.KitDao;
 import com.wellsfargo.sba.coronakit.dao.ProductMasterDao;
 import com.wellsfargo.sba.coronakit.dao.UserDao;
 import com.wellsfargo.sba.coronakit.exception.CkException;
+import com.wellsfargo.sba.coronakit.modal.CoronaKit;
 import com.wellsfargo.sba.coronakit.modal.KitDetail;
+import com.wellsfargo.sba.coronakit.modal.OrderSummary;
 import com.wellsfargo.sba.coronakit.modal.ProductMaster;
 import com.wellsfargo.sba.coronakit.modal.User;
 import com.wellsfargo.sba.coronakit.service.ProductService;
@@ -33,11 +35,18 @@ public class UserController extends HttpServlet {
 	private ProductMasterDao productMasterDao;
 	private ProductService productService;
 	private UserDao userDao;
-	//private KitDetail kitdetail;
-
+	private CoronaKit  coronakit;
+	private OrderSummary ordersummary;
 	
-
-	public void seUserDao(UserDao userDao) {
+	public HttpSession session;
+	// private KitDetail kitdetail;
+	public void setUserDao(OrderSummary ordersummary) {
+		this.ordersummary = ordersummary;
+	}
+	public void setUserDao(CoronaKit coronakit) {
+		this.coronakit = coronakit;
+	}
+	public void setUserDao(UserDao userDao) {
 		this.userDao = userDao;
 	}
 
@@ -111,6 +120,7 @@ public class UserController extends HttpServlet {
 				break;
 			}
 		} catch (Exception ex) {
+			ex.printStackTrace();
 
 			throw new ServletException(ex.getMessage());
 		}
@@ -120,26 +130,65 @@ public class UserController extends HttpServlet {
 	}
 
 	private String showOrderSummary(HttpServletRequest request, HttpServletResponse response) {
-		// TODO Auto-generated method stub
-		return "";
+		String view = "";
+
+		view = "ordersummary.jsp";
+		return view;
 	}
 
 	private String saveOrderForDelivery(HttpServletRequest request, HttpServletResponse response) {
-		// TODO Auto-generated method stub
-		return "";
+		String view = "";
+		session = request.getSession();
+		coronakit=new CoronaKit();
+		ordersummary=new OrderSummary();
+		List<KitDetail> kitdetails = null;
+		System.out.println("coronakitid="+request.getParameter("id"));
+		try {
+		kitdetails = kitDao.getByCoronaKitId(Integer.parseInt(request.getParameter("id")));
+
+		} catch (NumberFormatException e) {
+			request.setAttribute("errMsg", e.getMessage());
+			view = "errPage.jsp";
+			e.printStackTrace();
+		} catch (CkException e) {
+			request.setAttribute("errMsg", e.getMessage());
+			view = "errPage.jsp";
+			e.printStackTrace();
+		}
+		
+		coronakit.setId(Integer.parseInt(request.getParameter("id")));
+		coronakit.setPersonName(request.getParameter("name"));
+		coronakit.setEmail(request.getParameter("email"));
+		coronakit.setContactNumber(request.getParameter("contact"));
+		coronakit.setTotalAmount(Double.parseDouble(request.getParameter("amount")));
+		coronakit.setDeliveryAddress(request.getParameter("address"));
+		coronakit.setOrderDate(request.getParameter("date"));
+		coronakit.setOrderFinalized(Boolean.parseBoolean(request.getParameter("final")));
+		
+		ordersummary.setKitDetails(kitdetails);
+		ordersummary.setCoronaKit(coronakit);
+		
+		request.setAttribute("ordersummary", ordersummary);
+
+		view = "ordersummary.jsp";
+		return view;
 	}
 
 	private String showPlaceOrderForm(HttpServletRequest request, HttpServletResponse response) {
-		// TODO Auto-generated method stub
-		return "";
+		String view = "";
+
+		view = "placeorder.jsp";
+		return view;
 	}
 
 	private String showKitDetails(HttpServletRequest request, HttpServletResponse response) {
 
 		String view = "";
 
+		session = request.getSession();
+		
 		try {
-			List<KitDetail> kitdetail = kitDao.getAll();
+			List<KitDetail> kitdetail = kitDao.getByCoronaKitId(1);
 			request.setAttribute("kitlist", kitdetail);
 			view = "showkitdetails.jsp";
 		} catch (CkException e) {
@@ -166,15 +215,23 @@ public class UserController extends HttpServlet {
 	}
 
 	private String addNewItemToKit(HttpServletRequest request, HttpServletResponse response) {
-
+		System.out.println("add new item method");
 		KitDetail kitdetail = new KitDetail();
-		HttpSession session = request.getSession();
+		session = request.getSession();
+		System.out.println("form quantity"+request.getParameter("quantity"));
+		int quantity=Integer.parseInt(request.getParameter("quantity"));
+		System.out.println("quantity="+quantity);
+		double amount=Double.parseDouble(request.getParameter("cost"));
+		System.out.println("amount="+amount);
 
-		//kitdetail.setId(1);
+		/*double totalamount = (Integer.parseInt(request.getParameter("quantity")))
+				* (Double.parseDouble(request.getParameter("cost")));
+		System.out.println("amount" + totalamount);*/
+
+		// kitdetail.setId(1);
 		kitdetail.setCoronaKitId(1);
 		kitdetail.setProductId(Integer.parseInt(request.getParameter("value")));
 		kitdetail.setQuantity(Integer.parseInt(request.getParameter("quantity")));
-		double amount=Integer.parseInt(request.getParameter("quantity"))*Double.parseDouble(request.getParameter("cost"));
 		kitdetail.setAmount(amount);
 
 		String view = "";

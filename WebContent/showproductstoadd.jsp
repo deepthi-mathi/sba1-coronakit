@@ -25,8 +25,7 @@
 					<th>Product Cost</th>
 					<th>Product Desc</th>
 					<th>Quantity</th>
-					<!-- 					<th>Total Amount</th>
- -->
+					
 				</tr>
 				<c:forEach items="${productslist}" var="product">
 
@@ -42,6 +41,7 @@
 					</tr>
 				</c:forEach>
 			</table>
+					
 		</c:otherwise>
 	</c:choose>
 

@@ -26,7 +26,7 @@
 					<td><input type="text" name="password" /></td>
 				</tr>
 				<tr>
-					<td><span style="color: red"><%=(request.getAttribute("errMessage") == null) ? "" : request.getAttribute("errMessage")%></span></td>
+					<td><span style="color: red"><%=(request.getAttribute("msg") == null) ? "" : request.getAttribute("msg")%></span></td>
 				</tr>
 				<tr>
 					<!--         <td><a href="user?action=existinguser"><button>Existing user</button></a></td>

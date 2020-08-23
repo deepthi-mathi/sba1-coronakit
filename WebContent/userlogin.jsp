@@ -21,7 +21,9 @@
 		<span>|</span>
 		<a href="user?action=showkit">Show kit</a> 
 		<span>|</span>
-		<a href="user?action=ordersummary">ordersummary</a> 
+		<a href="user?action=placeorder">Place Order</a> 
+		<span>|</span>
+		<a href="user?action=ordersummary">Order Summary</a> 
 		<span>|</span> 
 		<a href="admin?action=logout">Logout</a>
 	</nav>

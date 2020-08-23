@@ -6,7 +6,7 @@ public class CoronaKit {
 	private String personName;
 	private String email;
 	private String contactNumber;
-	private int totalAmount;
+	private double totalAmount;
 	private String deliveryAddress;
 	private String orderDate;
 	private boolean orderFinalized;
@@ -50,10 +50,10 @@ public class CoronaKit {
 	public void setContactNumber(String contactNumber) {
 		this.contactNumber = contactNumber;
 	}
-	public int getTotalAmount() {
+	public double getTotalAmount() {
 		return totalAmount;
 	}
-	public void setTotalAmount(int totalAmount) {
+	public void setTotalAmount(double totalAmount) {
 		this.totalAmount = totalAmount;
 	}
 	public String getDeliveryAddress() {

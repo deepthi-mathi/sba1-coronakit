@@ -10,7 +10,7 @@
 </head>
 <body>
 <jsp:include page="header.jsp"/>
-<h5 align=center>Product List you may want to add to Kit</h5>
+<h5 align=center>List added to Kit</h5>
 <hr/>
 
 <c:choose>

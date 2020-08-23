@@ -27,6 +27,8 @@ public class KitDao {
 	public static final String UPD_ITEM_QRY = "UPDATE kitdetail SET coronaKitid=?,productid=?,quantity=?,amount=? WHERE kiddetailid=?";
 	public static final String DEL_ITEM_QRY = "DELETE FROM kitdetail WHERE kiddetailid=?";
 	public static final String SEL_ITEM_QRY_BY_ID = "SELECT kiddetailid,coronaKitid,productid,quantity,amount FROM kitdetail WHERE kiddetailid=?";
+	public static final String SEL_ITEM_QRY_BY_COROID = "SELECT kiddetailid,coronaKitid,productid,quantity,amount FROM kitdetail WHERE coronaKitid=?";
+
 	public static final String SEL_ALL_ITEMS_QRY = "SELECT kiddetailid,coronaKitid,productid,quantity,amount FROM kitdetail";
 
 	/*public KitDao(String jdbcURL, String jdbcUsername, String jdbcPassword) {
@@ -112,35 +114,6 @@ public class KitDao {
 
 		return isDeleted;
 	}
-
-	public KitDetail getById(Integer kitdetailid) throws CkException {
-		KitDetail kitdetail = null;
-
-		try (Connection con = ConnectionFactory.getConnection();
-				PreparedStatement pst = con.prepareStatement(SEL_ITEM_QRY_BY_ID)) {
-
-			pst.setInt(1, kitdetailid);
-
-			ResultSet rs = pst.executeQuery();
-
-			if (rs.next()) {
-				kitdetail = new KitDetail();
-				kitdetail.setId(rs.getInt(1));
-				kitdetail.setCoronaKitId(rs.getInt(2));
-				kitdetail.setProductId(rs.getInt(3));
-				kitdetail.setQuantity(rs.getInt(4));
-				kitdetail.setAmount(rs.getDouble(5));
-			}
-
-		} catch (SQLException | NamingException exp) {
-			exp.printStackTrace();
-
-			throw new CkException("Retrival the item failed!");
-		}
-
-		return kitdetail;
-	}
-
 	public List<KitDetail> getAll() throws CkException {
 		List<KitDetail> kitdetails = new ArrayList<>();
 
@@ -171,5 +144,66 @@ public class KitDao {
 		}
 		return kitdetails;
 	}
+	public List<KitDetail> getByCoronaKitId(Integer coronakitid) throws CkException {
+		List<KitDetail> kitdetails = new ArrayList<>();
+
+		try (Connection con = ConnectionFactory.getConnection();
+				PreparedStatement pst = con.prepareStatement(SEL_ITEM_QRY_BY_COROID)) {
+
+			pst.setInt(1, coronakitid);
+
+			ResultSet rs = pst.executeQuery();
+
+			while (rs.next()) {
+				KitDetail kitdetail = new KitDetail();
+				kitdetail.setId(rs.getInt(1));
+				kitdetail.setCoronaKitId(rs.getInt(2));
+				kitdetail.setProductId(rs.getInt(3));
+				kitdetail.setQuantity(rs.getInt(4));
+				kitdetail.setAmount(rs.getDouble(5));
+				kitdetails.add(kitdetail);
+
+			}
+
+			if (kitdetails.isEmpty()) {
+				kitdetails = null;
+			}
+		} catch (SQLException | NamingException exp) {
+			exp.printStackTrace();
+
+			throw new CkException("Retrival the item failed!");
+		}
+		return kitdetails;
+
+	}
+	public KitDetail getById(Integer kitdetailid) throws CkException {
+		KitDetail kitdetail = null;
+
+		try (Connection con = ConnectionFactory.getConnection();
+				PreparedStatement pst = con.prepareStatement(SEL_ITEM_QRY_BY_ID)) {
+
+			pst.setInt(1, kitdetailid);
+
+			ResultSet rs = pst.executeQuery();
+
+			if (rs.next()) {
+				kitdetail = new KitDetail();
+				kitdetail.setId(rs.getInt(1));
+				kitdetail.setCoronaKitId(rs.getInt(2));
+				kitdetail.setProductId(rs.getInt(3));
+				kitdetail.setQuantity(rs.getInt(4));
+				kitdetail.setAmount(rs.getDouble(5));
+			}
+
+		} catch (SQLException | NamingException exp) {
+			exp.printStackTrace();
+
+			throw new CkException("Retrival the item failed!");
+		}
+
+		return kitdetail;
+	}
+
+	
 
 }
