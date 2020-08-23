@@ -12,10 +12,10 @@
 	<jsp:include page="header.jsp" />
 	<h5 align=center>Product List - Add to Kit</h5>
 	<hr />
-
+	
 	<c:choose>
 		<c:when test="${productslist==null || productslist.isEmpty() }">
-			<p>No Products Found</p>
+			<p>No Products Found is this</p>
 		</c:when>
 		<c:otherwise>
 			<table border="1">
@@ -34,17 +34,17 @@
 						<td>${product.productName}</td>
 						<td>${product.cost }</td>
 						<td>${product.productDescription }</td>
-						<td><input type="text" name="quatity" /></td>
-						<td><a
+<!-- 						<td><input type="text" name="quantity" /></td>
+ -->						<td><a
 							href="user?action=addnewitem&id=${product.id}&cost=${product.cost}"
 							style="font-size: 10px; text-decoration: none">ADD TO KIT</a></td>
+							<c:out value="${param.msg}"/>
 					</tr>
 				</c:forEach>
 			</table>
 					
 		</c:otherwise>
 	</c:choose>
-
 	<hr />
 	<jsp:include page="footer.jsp" />
 </body>

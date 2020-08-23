@@ -149,7 +149,6 @@ public class KitDao {
 
 		try (Connection con = ConnectionFactory.getConnection();
 				PreparedStatement pst = con.prepareStatement(SEL_ITEM_QRY_BY_COROID)) {
-
 			pst.setInt(1, coronakitid);
 
 			ResultSet rs = pst.executeQuery();

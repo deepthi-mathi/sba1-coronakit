@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -35,17 +36,20 @@ public class UserController extends HttpServlet {
 	private ProductMasterDao productMasterDao;
 	private ProductService productService;
 	private UserDao userDao;
-	private CoronaKit  coronakit;
+	private CoronaKit coronakit;
 	private OrderSummary ordersummary;
-	
+
 	public HttpSession session;
+
 	// private KitDetail kitdetail;
 	public void setUserDao(OrderSummary ordersummary) {
 		this.ordersummary = ordersummary;
 	}
+
 	public void setUserDao(CoronaKit coronakit) {
 		this.coronakit = coronakit;
 	}
+
 	public void setUserDao(UserDao userDao) {
 		this.userDao = userDao;
 	}
@@ -139,12 +143,14 @@ public class UserController extends HttpServlet {
 	private String saveOrderForDelivery(HttpServletRequest request, HttpServletResponse response) {
 		String view = "";
 		session = request.getSession();
-		coronakit=new CoronaKit();
-		ordersummary=new OrderSummary();
+		coronakit = new CoronaKit();
+		ordersummary = new OrderSummary();
+		double totalamount = 0;
+
 		List<KitDetail> kitdetails = null;
-		System.out.println("coronakitid="+request.getParameter("id"));
+
 		try {
-		kitdetails = kitDao.getByCoronaKitId(Integer.parseInt(request.getParameter("id")));
+			kitdetails = kitDao.getByCoronaKitId(Integer.parseInt(request.getParameter("id")));
 
 		} catch (NumberFormatException e) {
 			request.setAttribute("errMsg", e.getMessage());
@@ -155,22 +161,32 @@ public class UserController extends HttpServlet {
 			view = "errPage.jsp";
 			e.printStackTrace();
 		}
-		
+
+		for (KitDetail temp : kitdetails) {
+			totalamount += temp.getAmount();
+		}
+		session.setAttribute("totalamount", totalamount);
+
 		coronakit.setId(Integer.parseInt(request.getParameter("id")));
 		coronakit.setPersonName(request.getParameter("name"));
 		coronakit.setEmail(request.getParameter("email"));
 		coronakit.setContactNumber(request.getParameter("contact"));
-		coronakit.setTotalAmount(Double.parseDouble(request.getParameter("amount")));
+		coronakit.setTotalAmount(totalamount);
 		coronakit.setDeliveryAddress(request.getParameter("address"));
 		coronakit.setOrderDate(request.getParameter("date"));
-		coronakit.setOrderFinalized(Boolean.parseBoolean(request.getParameter("final")));
-		
-		ordersummary.setKitDetails(kitdetails);
-		ordersummary.setCoronaKit(coronakit);
-		
-		request.setAttribute("ordersummary", ordersummary);
+		coronakit.setOrderFinalized(request.getParameter("final") != null);
 
-		view = "ordersummary.jsp";
+		if (request.getParameter("final") != null) {
+
+			ordersummary.setKitDetails(kitdetails);
+			ordersummary.setCoronaKit(coronakit);
+			request.setAttribute("ordersummary", ordersummary);
+
+			view = "ordersummary.jsp";
+		}
+		else
+			request.setAttribute("msg", "Order is not finalized");
+
 		return view;
 	}
 
@@ -186,7 +202,7 @@ public class UserController extends HttpServlet {
 		String view = "";
 
 		session = request.getSession();
-		
+
 		try {
 			List<KitDetail> kitdetail = kitDao.getByCoronaKitId(1);
 			request.setAttribute("kitlist", kitdetail);
@@ -218,27 +234,19 @@ public class UserController extends HttpServlet {
 		System.out.println("add new item method");
 		KitDetail kitdetail = new KitDetail();
 		session = request.getSession();
-		System.out.println("form quantity"+request.getParameter("quantity"));
-		int quantity=Integer.parseInt(request.getParameter("quantity"));
-		System.out.println("quantity="+quantity);
-		double amount=Double.parseDouble(request.getParameter("cost"));
-		System.out.println("amount="+amount);
 
-		/*double totalamount = (Integer.parseInt(request.getParameter("quantity")))
-				* (Double.parseDouble(request.getParameter("cost")));
-		System.out.println("amount" + totalamount);*/
-
-		// kitdetail.setId(1);
 		kitdetail.setCoronaKitId(1);
-		kitdetail.setProductId(Integer.parseInt(request.getParameter("value")));
-		kitdetail.setQuantity(Integer.parseInt(request.getParameter("quantity")));
-		kitdetail.setAmount(amount);
+		kitdetail.setProductId(Integer.parseInt(request.getParameter("id")));
+		kitdetail.setQuantity(1);
+		kitdetail.setAmount(Double.parseDouble(request.getParameter("cost")));
 
 		String view = "";
 
 		try {
 			kitDao.add(kitdetail);
 			request.setAttribute("msg", "Item Got Added!");
+			List<ProductMaster> products = productService.getAllItems();
+			request.setAttribute("productslist", products);
 			view = "showproductstoadd.jsp";
 		} catch (CkException e) {
 			request.setAttribute("errMsg", e.getMessage());

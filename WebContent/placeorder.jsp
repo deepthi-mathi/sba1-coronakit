@@ -35,10 +35,10 @@
 					<td>Contact Number</td>
 					<td><input type="text" name="contact" /></td>
 				</tr>
-				<tr>
+				<!-- <tr>
 					<td>Total Amount</td>
-					<td><input type="text" name="amount" /></td>
-				</tr>
+					<td><input type="text" name="amount" value=${totalamount}/></td>
+				</tr> -->
 				<tr>
 					<td>Delivery Address</td>
 					<td><input type="text" name="address" /></td>
